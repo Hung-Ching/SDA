@@ -1,0 +1,36 @@
+#DD
+DD1996<- readLines("C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/DD/1996.csv")
+DD1997<- readLines("C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/DD/1997.csv")
+DD1998<- readLines("C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/DD/1998.csv")
+DD1999<- readLines("C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/DD/1999.csv")
+DD2000<- readLines("C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/DD/2000.csv")
+DD2001<- readLines("C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/DD/2001.csv")
+DD <- c(DD1996, DD1997,DD1998,DD1999,DD2000,DD2001)
+
+CaseNum <- NULL ; Id <- NULL ; Sex <- NULL ; Division <- NULL; E_Bed_Day<-NULL; S_Bed_Day<-NULL
+During <- NULL ; SubClass <- NULL ; TracEven <- NULL ; Fee <- NULL ; Part_Fee<-NULL; Appl_Fee<-NULL
+
+
+for(i in 1:length(DD)){
+  CaseNum <- c(CaseNum , substr( DD[i] , start = 27 , 32 ))
+  Id <- c(Id , substr( DD[i] , start = 33 , 42 ))
+  Sex <- c(Sex , substr( DD[i] , start = 424 , 424 ))
+  Division <- c(Division , substr( DD[i] , start = 56 , 57 ))
+  During <- c(During , as.numeric(as.Date(substr( DD[i] , start = 66 , 73 ),'%Y%m%d') - 
+                                    as.Date(substr( DD[i] , start = 58 , 65 ),'%Y%m%d')))
+  E_Bed_Day <- c(E_Bed_Day , substr( DD[i] , start = 90 , 92 ))
+  S_Bed_Day <- c(S_Bed_Day , substr( DD[i] , start = 93 , 95 ))
+  TracEven <- c(TracEven , substr( DD[i] , start = 52 , 52 ))
+  SubClass <- c(SubClass , substr( DD[i] , start = 51 , 51 ))
+  Fee <- c(Fee , substr( DD[i] , start = 293 , 300 ))
+  Part_Fee<- c(Part_Fee , substr( DD[i] , start = 301 , 307 ))
+  Appl_Fee<- c(Appl_Fee , substr( DD[i] , start = 308 , 315 ))
+}
+
+DD <- do.call("cbind", list(CaseNum, Id, Sex ,Division , During , E_Bed_Day , S_Bed_Day ,
+                            SubClass , TracEven , Fee , Part_Fee , Appl_Fee))
+
+colnames(DD) <- c('CaseNum', 'Id', 'Sex' ,'Division' , 'During' , 'E_Bed_Day' , 'S_Bed_Day' ,
+                  'SubClass' , 'TracEven' , 'Fee' , 'Part_Fee' , 'Appl_Fee')
+
+write.csv(DD,'DD.csv')
