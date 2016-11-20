@@ -1,0 +1,45 @@
+#CD
+CD96 <- readLines('C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/1996/TDB_CD1996.DAT')
+CD97 <- readLines('C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/1997/TDB_CD1997.DAT')
+CD98 <- readLines('C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/1998/TDB_CD1998.DAT')
+CD99 <- readLines('C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/1999/TDB_CD1999.DAT')
+CD00 <- readLines('C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/2000/TDB_CD2000.DAT')
+CD01 <- readLines('C:/Users/Rick/Desktop/統計系/統計資料分析/建保教學抽樣歸人檔/2001/TDB_CD2001.DAT')
+#CD <- do.call("append", list(CD96, CD97, CD98 ,CD99 ,CD00 ,CD01))  unsuitable for vector
+CD <- c(CD96, CD97, CD98 ,CD99 ,CD00 ,CD01)
+
+
+ApplDate <- substr( CD , start = 18 , 23 )
+CaseNum <- substr( CD , start = 28 , 33 )
+Id <- substr( CD , start = 68 , 77 )
+Sex <- substr( CD , start = 209 , 209 )
+Age <- as.numeric(substr( CD , start = 18 , 21 ))- as.numeric(substr( CD , start = 60 , 63 ))
+Age[Age==198] <- 98
+Division <- substr( CD , start = 42 , 43 )
+During <- as.numeric(as.Date(substr( CD , start = 52 , 59 ),'%Y%m%d') - 
+                     as.Date(substr( CD , start = 44 , 51 ),'%Y%m%d'))
+SubClass <- substr( CD , start = 81 , 81 )
+PartFee <- substr( CD , start = 193 , 200 )
+SubFee <- substr( CD , start = 201 , 208 )
+
+CD <- do.call("cbind", list(ApplDate ,CaseNum , Id, Sex ,Age ,Division , During ,
+                            SubClass , PartFee , SubFee))
+
+colnames(CD) <- c('ApplDate' , 'CaseNum', 'Id', 'Sex' ,'Age' ,'Division' , 'During' ,'SubClass' ,
+                  'PartFee' , 'SubFee')
+
+write.csv(CD,'CD.csv')
+
+#analysis CD file
+#problem 1 自費比例上升
+ApplDateNames <- c( 199601:199612 , 199701:199712 , 199801:199812 , 199901:199912 ,
+                  200001:200012 , 200101:200112 , 200201 )
+
+ApplDateNum <- NULL; MonthPartFee <- NULL
+for(i in ApplDateNames){ 
+    ApplDateNum <- c( ApplDateNum , sum(ApplDate==i))
+}
+for(i in ApplDateNames){ 
+    MonthPartFee <- c( MonthPartFee , sum( as.numeric( PartFee[ ApplDate==i ] ) ) )
+}
+MonthPartFee/ApplDateNum
